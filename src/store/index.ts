@@ -1,8 +1,9 @@
-import { createStore } from "vuex";
+import { createStore } from 'vuex';
+import { popup, popupRootState } from './modules/popup';
 
+export interface RootState {
+  popup: popupRootState;
+}
 export default createStore({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  modules: { popup },
 });
