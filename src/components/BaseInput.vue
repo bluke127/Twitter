@@ -5,6 +5,7 @@
       :placeholder="placeholder"
       :readonly="readonly"
       :value="modelValue"
+      :style="styles"
       @input="$emit('update:modelValue', $event.target.value)"
       @focus="$emit('focus')"
       @blur="$emit('blur')"
@@ -14,9 +15,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRef } from 'vue';
+import { defineComponent, toRef, PropType } from 'vue';
 export default defineComponent({
   props: {
+    styles: {
+      type: Object as PropType<{ borderBottom: string; height?: string; lineHeight?: string }>,
+      default: () => {
+        return { borderBottom: '2px solid #eee', height: '24px', lineHeight: '24px' };
+      },
+    },
     type: { type: String, default: 'text', required: false },
     placeholder: { type: String, required: false, default: '' },
     readonly: { type: Boolean },
@@ -32,7 +39,16 @@ export default defineComponent({
 <style lang="scss">
 .base_input {
   position: relative;
+  span {
+    font-size: 14px;
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000;
+  }
   input {
+    width: 100%;
     ::placeholder {
       color: #434343;
       font-weight: 900;

@@ -5,7 +5,7 @@
         class="auth_navi_tab"
         v-for="(tabs, index) in tabs"
         :key="index"
-        @click="emit('clickTab', tabs)"
+        @click="$emit('clickTab', tabs)"
       >
         {{ tabs }}
       </li>

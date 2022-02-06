@@ -1,29 +1,213 @@
 <template>
-  <div id="wrap">
-    <div id="title">
-      Twitter<span><img :src="require('@/assets/image/logo.png')" alt="logo" ref="logo" /></span>
-    </div>
-    <div id="context">
-      <span
-        ><label>Login </label><input type="text" @keyup="checkId()" v-model="id.idValue"
-      /></span>
-      <div class="warnMsg">
-        <span v-if="id.errorFlag">{{ id.errorMsg }}</span>
+  <div>
+    <div id="wrap">
+      <div id="title">
+        Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span>
       </div>
-      <span
-        ><label>Password</label><input type="text" @keyup="checkPass()" v-model="pass.passValue"
-      /></span>
-      <div class="warnMsg">
-        <span v-if="pass.errorFlag">{{ pass.errorMsg }}</span>
+      <div id="context">
+        <BaseInput
+          :styles="inputStyle"
+          :placeholder="'카카오메일 아이디, 이메일, 전화번호'"
+          v-model="id.idValue"
+          @click.self="idLabelClick"
+          @input="[idLabelClick(), validateId(id.idValue)]"
+          @blur="idLabelBlur"
+          ><template v-slot:label v-if="id.idValue">
+            <label class="label" @click="labelClick('id')">
+              <span class="id_label" :class="!id.setIdValueBtn ? 'close' : ''"></span>
+            </label> </template
+        ></BaseInput>
+        <BaseInput
+          :styles="inputStyle"
+          v-model="pass.passValue"
+          @click.self="passLabelClick"
+          @input="[passLabelClick(), validatePass(pass.passValue)]"
+          @blur="passLabelBlur"
+          ><template v-slot:label v-if="pass.passValue">
+            <label class="label" @click="labelClick('pass')">
+              <span class="pass_label" :class="!pass.setPassValueBtn ? 'close' : ''"></span>
+            </label> </template
+        ></BaseInput>
+        <div class="warnMsg">
+          <span v-if="checkLogin">{{ errorMsg }}</span>
+        </div>
       </div>
+      <button @click="login" class="login" :class="{ active: btnActiveFlag }">로그인</button>
+      <router-link to="/join" class="join">회원가입</router-link>
     </div>
-    <button @click="login" class="login" :class="{ active: btnActiveFlag }">로그인</button>
-    <router-link to="/join" class="join">회원가입</router-link>
-    <default-pop v-if="checkPop" :popSet="popSet" @close="close"></default-pop>
+    <default-pop v-if="store.state.popup.popupFlag" :popSet="popSet" @close="close"></default-pop>
   </div>
 </template>
+
+<script lang="ts">
+import BaseInput from '@/components/BaseInput.vue';
+import { defineComponent, ref, computed, watchEffect } from 'vue';
+import { useStore } from 'vuex';
+import { isId, isPass } from '@/api/validate/index';
+import { loginApi } from '@/api/index';
+import defaultPop from '@/components/defaultPop.vue';
+type userId = {
+  id: string;
+  idValue: string;
+  setIdValueBtn: boolean;
+};
+type userPass = {
+  pass: string;
+  passValue: string;
+  setPassValueBtn: boolean;
+};
+export type popupSet = { confirmMsg: string };
+export default defineComponent({
+  components: { defaultPop, BaseInput },
+  setup() {
+    const inputStyle = { border: '2px solid #eee', height: '40px', lineHeight: '40px' };
+    const store = useStore();
+    const id = ref<userId>({
+      id: '',
+      idValue: '',
+      setIdValueBtn: false,
+    });
+    const pass = ref<userPass>({
+      pass: '',
+      passValue: '',
+      setPassValueBtn: false,
+    });
+    const login = () => {
+      if (!id.value.idValue || !pass.value.passValue) {
+        store.dispatch('popup/SET_POPUP', true);
+        return;
+      }
+      const info = { email: id.value.idValue, password: pass.value.passValue };
+      loginApi.FETCH_LOGIN(info);
+      store.dispatch('user/SET_EMAIL', `${id.value.idValue}`);
+    };
+    const setIdLabelFlag = ref<null | string>(null);
+    const idDelete = ref<boolean>(false);
+    const validateId = (id: string) => {
+      if (isId(id)) {
+        if (!checkLogin.value) {
+          errorMsg.value = '';
+          return true;
+        }
+      } else {
+        errorMsg.value = '아이디의 형식이 맞지 않습니다';
+        return false;
+      }
+    };
+    const validatePass = (pass: string) => {
+      if (isPass(pass)) {
+        if (!checkLogin.value) {
+          errorMsg.value = '';
+          return true;
+        }
+      } else {
+        errorMsg.value = '비밀번호의 형식이 맞지 않습니다';
+        return false;
+      }
+    };
+    // watchEffect(() => {
+    //   if (!checkLogin.value) {
+    //     validateId(id.value.idValue);
+    //     validatePass(pass.value.passValue);
+    //   }
+    // });
+    const checkLogin = computed(() => {
+      if (
+        isId(id.value.idValue) &&
+        id.value.idValue &&
+        isPass(pass.value.passValue) &&
+        pass.value.passValue
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    const idLabelClick = () => {
+      if (id.value.idValue) {
+        id.value.setIdValueBtn = false;
+      }
+    };
+    const idLabelBlur = () => {
+      if (id.value.idValue) {
+        id.value.setIdValueBtn = true;
+      }
+    };
+    const passLabelClick = () => {
+      if (pass.value.passValue) {
+        pass.value.setPassValueBtn = false;
+      }
+    };
+    const passLabelBlur = () => {
+      if (pass.value.passValue) {
+        pass.value.setPassValueBtn = true;
+      }
+    };
+    const labelClick = (category: string) => {
+      if (category === 'id') {
+        if (id.value.idValue && id.value.setIdValueBtn) {
+          id.value.setIdValueBtn = false;
+          id.value.idValue = '';
+        }
+      } else {
+        if (pass.value.passValue && pass.value.setPassValueBtn) {
+          pass.value.setPassValueBtn = false;
+          pass.value.passValue = '';
+        }
+      }
+    };
+
+    const errorMsg = ref<string>('');
+    const btnActiveFlag = computed(() => {
+      if (id.value.idValue && pass.value.passValue) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    const popSet = ref<{
+      title: string;
+      passage: string;
+      confirmMsg: string;
+      concelMsg: string;
+    }>({
+      title: '',
+      passage: '',
+      confirmMsg: '',
+      concelMsg: '',
+    });
+
+    const close = () => {
+      store.dispatch('popup/SET_POPUP', false);
+    };
+    return {
+      id,
+      pass,
+      popSet,
+      idDelete,
+      validateId,
+      validatePass,
+      checkLogin,
+      idLabelClick,
+      idLabelBlur,
+      passLabelBlur,
+      labelClick,
+      passLabelClick,
+      btnActiveFlag,
+      close,
+      store,
+      inputStyle,
+      errorMsg,
+      login,
+      setIdLabelFlag,
+    };
+  },
+});
+</script>
+
 <style lang="scss" scoped>
 #wrap {
+  background-color: $represent;
   min-width: 200px;
   width: 40%;
   margin: 0 auto;
@@ -72,10 +256,6 @@ input {
   background: transparent;
   color: #fff;
 }
-/* input[type='text']:hover {
-  background: rgba(213 252 0 / 50%);
-} */
-
 #context span {
   display: block;
 }
@@ -107,113 +287,49 @@ input {
 .login.active {
   background-color: salmon;
 }
-</style>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
-import { userInfo } from '@/apis/user.js';
-import defaultPop from '@/components/defaultPop.vue';
-type userId={
-        id: string,
-        idValue: string,
-        errorFlag: boolean,
-        errorMsg: string,}
-type userPass={
-        id: string,
-        idValue: string,
-        errorFlag: boolean,
-        errorMsg: string}
-export default defineComponent({
-  components: { defaultPop },
-  setup() {
-      const id=ref<userId>({
-        id: '',
-        idValue: '',
-        errorFlag: false,
-        errorMsg: '',
-      }),
-      pass: {
-        pass: '',
-        passValue: '',
-        errorFlag: false,
-        errorMsg: '',
-      },
-      btnActiveFlag: false,
-      popSet: {
-        title: '',
-        passage: '',
-        confirmMsg: '',
-        concelMsg: '',
-      },
-    };
-  },
-  computed: {
-    ...mapState(['checkPop']),
-  },
-  methods: {
-    ...mapMutations(['CHECK_ID', 'SET_POP']),
-    close() {
-      this.SET_POP(false);
-    },
-    login() {
-      if (!this.btnActiveFlag) {
-        this.SET_POP(true);
-        this.popSet.confirmMsg = '확인';
-        this.popSet.title = '알림';
-        if (this.id.errorMsg) {
-          this.popSet.passage = this.id.errorMsg;
-        } else if (this.pass.errorMsg) {
-          this.popSet.passage = this.pass.errorMsg;
-        } else if (!this.id.idValue && !this.pass.passValue) {
-          this.popSet.passage = '아이디를 입력해주세요.';
-        }
-      }
-      this.id.id = this.id.idValue;
-      this.pass.pass = this.pass.passValue;
-      this.$router.push({ name: 'Main' });
-      // localStorage.setItem("userInfo") = this.id.id;
-    },
-    checkId() {
-      var idReg = /^[A-za-z]/g;
-      const check = userInfo.checkApi(idReg, this.id.idValue);
-      if (check === 'wrong') {
-        this.id.errorFlag = true;
-        this.id.errorMsg = '시작을 영문으로 시작해주세요.';
-        return false;
-      } else if (check === 'empty') {
-        this.id.errorFlag = true;
-        this.id.errorMsg = '아이디를 입력해주세요';
-        return false;
-      }
-      this.id.errorFlag = false;
-      this.id.errorMsg = '';
-      return true;
-    },
-    checkPass() {
-      var passReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d~!@#$%^&*()+|=]{8,20}$/;
-      const check = userInfo.checkApi(passReg, this.pass.passValue);
-      if (check === 'wrong') {
-        this.pass.errorFlag = true;
-        this.pass.errorMsg =
-          '최소 8 자 및 최대 10 자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수 문자 하나 이상으로 작성해주세요.';
-        return false;
-      } else if (check === 'empty') {
-        this.pass.errorFlag = true;
-        this.pass.errorMsg = '비밀번호를 입력해주세요';
-        return false;
-      }
-      this.pass.errorFlag = false;
-      this.pass.errorMsg = '';
-      this.btnActive(this.id.errorFlag, this.pass.errorFlag);
-      return true;
-    },
-    btnActive(id, pass) {
-      console.log(id, pass);
-      if (!id && !pass && this.id.idValue && this.pass.passValue) {
-        this.btnActiveFlag = true;
-      }
-    },
-  },
-});
-</script>
+.label {
+  min-width: 20px;
+  min-height: 20px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+}
+::v-deep input {
+  width: 100%;
+  height: 48px;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  border-color: #ebebeb;
+  padding: 11px 70px 8px 0;
+  color: #252525;
+  outline: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  caret-color: #191919;
+  text-decoration: none;
+}
+.id_label,
+.pass_label {
+  &.close {
+    width: 20px;
+    height: 20px;
+    display: block;
+    background: url('~@/assets/logo/logo_gather.png');
+    background-position: $close;
+    cursor: pointer;
+  }
+}
+::v-deep .base_input input {
+  &:focus {
+    border-bottom: 2px solid #000 !important;
+  }
+}
+::v-deep .hover {
+  &:hover {
+    background-color: #e7e7e7 !important;
+  }
+}
+</style>

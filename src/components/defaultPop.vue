@@ -1,5 +1,5 @@
 <template>
-  <div id="popWrap">
+  <div id="popWrap" @click.self="close">
     <div id="pop">
       <div id="popInner">
         <div id="text">
@@ -24,25 +24,32 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, ref, computed, PropType } from 'vue';
+import type { popupSet } from '@/views/Login.vue';
+export default defineComponent({
   props: {
-    popSet: { type: [Object, Array] },
+    popSet: {
+      type: Object as PropType<popupSet>,
+      default: () => {
+        return {
+          confirmMsg: '',
+        };
+      },
+    },
   },
-  data() {
-    return {
-      confirmMsg: '확인' || this.popSet.confirmMsg,
+  setup(props, context) {
+    const confirmMsg = ref<string>('확인' || props.popSet.confirmMsg);
+    const close = () => {
+      alert();
+      context.emit('close');
     };
+    const confirm = () => {
+      close();
+    };
+    return { confirmMsg, close, confirm };
   },
-  methods: {
-    close() {
-      this.$emit('close');
-    },
-    confirm() {
-      this.close();
-    },
-  },
-};
+});
 </script>
 
 <style scoped>

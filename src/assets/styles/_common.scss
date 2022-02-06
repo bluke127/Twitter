@@ -1,5 +1,5 @@
-@import "./init.scss";
-@import "./variables.scss";
+@import './init.scss';
+@import './variables.scss';
 body {
   margin: 0;
   padding: 0;
@@ -10,10 +10,13 @@ body {
   box-sizing: inherit;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-size: 62.5%;
-  font-family: NanumSquareEB, NanumSquareB;
+  background-color: $represent;
+  font-family: NanumSquareEB,
+    NanumSquareB;
 }
 
 a {
@@ -37,10 +40,12 @@ input {
 
 @font-face {
   font-family: NanumSquareEB;
-  src: url('~@/styles/fonts/NanumSquareExtraBold.ttf') format('woff')
+  src: url('~@/assets/styles/fonts/NanumSquareExtraBold.ttf')
+    format('woff');
 }
 
 @font-face {
   font-family: NanumSquareB;
-  src: url('~@/styles/fonts/NanumSquareBold.ttf') format('woff');
+  src: url('~@/assets/styles/fonts/NanumSquareBold.ttf')
+    format('woff');
 }

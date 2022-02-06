@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+import router from '@/router';
 import { defineComponent, ref } from 'vue';
 import AuthNavi from '@/components/AuthNavi.vue';
 export default defineComponent({
@@ -17,6 +18,11 @@ export default defineComponent({
     const getTabs = ref<string>('로그인');
     const clickTab = (tabs: string) => {
       getTabs.value = tabs;
+      if (tabs === '로그인') {
+        router.push({ name: 'Login' });
+      } else {
+        router.push({ name: 'Join' });
+      }
     };
     return { tabs, getTabs, clickTab };
   },

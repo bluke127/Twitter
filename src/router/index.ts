@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/Login.vue'),
       },
       {
-        path: '/tabs/join',
+        path: '/auth/join',
         name: 'Join',
         component: () => import('@/views/Join.vue'),
       },
