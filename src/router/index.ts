@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
-    redirect: '/join',
+    redirect: '/auth/join',
     component: () => import('@/views/MainPage.vue'),
     children: [
       {
