@@ -1,16 +1,16 @@
 <template>
   <div>
-    <Main>
+    <MainLayout>
       <router-view></router-view>
-    </Main>
+    </MainLayout>
   </div>
 </template>
 
 <script lang="ts">
-import Main from '@/layout/Main.vue';
+import MainLayout from '@/layout/MainLayout.vue';
 import { defineComponent } from 'vue';
 export default defineComponent({
-  components: { Main },
+  components: { MainLayout },
   setup() {
     return {};
   },

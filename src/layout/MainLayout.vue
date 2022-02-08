@@ -3,28 +3,27 @@
     <MainHeader class="header_wrap"></MainHeader>
     <main><slot></slot></main>
     <MainFooter></MainFooter>
+    <SideMenu></SideMenu>
   </div>
 </template>
 
 <script lang="ts">
 import MainHeader from '@/components/Header.vue';
 import MainFooter from '@/components/Footer.vue';
+import SideMenu from '@/components/SideMenu.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  components: { MainHeader, MainFooter },
+  components: { MainHeader, MainFooter, SideMenu },
 });
 </script>
 
 <style lang="scss">
 .main_wrap {
   width: 640px;
-  margin: 87px auto 0;
-  .header_wrap {
-    width: 640px;
-    position: fixed;
-    top: 0;
-    z-index: 1;
+  margin: 0 auto;
+  main {
+    margin: 15vh auto 0;
   }
 }
 </style>

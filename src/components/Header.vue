@@ -1,17 +1,32 @@
 <template>
   <div class="header_wrap">
-    <div id="title">
+    <div id="title" @click="openSide">
       Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { defineComponent } from 'vue';
+import { useStore } from 'vuex';
+
+export default defineComponent({
+  setup() {
+    const store = useStore();
+    const openSide = () => {
+      store.dispatch('menu/SET_SIDEMENU', true);
+    };
+    return { store, openSide };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
 .header_wrap {
+  width: 640px;
+  position: fixed;
+  top: 0;
+  z-index: 1;
   #title {
     height: 15vh;
     font-size: 50px;
