@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
+import { popupSet } from '@/types/index';
 import { defineComponent, ref, computed, watchEffect } from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass } from '@/api/validate/index';
@@ -56,7 +57,6 @@ type userPass = {
   passValue: string;
   setPassValueBtn: boolean;
 };
-export type popupSet = { confirmMsg: string };
 export default defineComponent({
   components: { defaultPop, BaseInput },
   setup() {
@@ -105,12 +105,6 @@ export default defineComponent({
         return false;
       }
     };
-    // watchEffect(() => {
-    //   if (!checkLogin.value) {
-    //     validateId(id.value.idValue);
-    //     validatePass(pass.value.passValue);
-    //   }
-    // });
     const checkLogin = computed(() => {
       if (
         isId(id.value.idValue) &&
@@ -165,12 +159,7 @@ export default defineComponent({
         return false;
       }
     });
-    const popSet = ref<{
-      title: string;
-      passage: string;
-      confirmMsg: string;
-      concelMsg: string;
-    }>({
+    const popSet = ref<popupSet>({
       title: '',
       passage: '',
       confirmMsg: '',

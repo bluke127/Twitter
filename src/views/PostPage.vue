@@ -1,20 +1,21 @@
 <template>
   <div>
-    <div><Post :category="'write'"></Post></div>
-    <div><Post :category="'store'"></Post></div>
+    <div><PostWrite></PostWrite></div>
+    <div><PostStore></PostStore></div>
   </div>
 </template>
 
 <script lang="ts">
-import Post from '@/components/Post.vue';
+import PostWrite from '@/components/PostWrite.vue';
+import PostStore from '@/components/PostStore.vue';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: { Post },
-  setup() {
-    const category = ref<string>('');
-    return { category };
-  },
+  components: { PostWrite, PostStore },
+  // setup() {
+  //   const category = ref<string>('');
+  //   return { category };
+  // },
 });
 </script>
 

@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import Post from '@/components/Post.vue';
+import Post from '@/components/PostWrite.vue';
 import { defineComponent, ref, computed, watchEffect } from 'vue';
 
 export default defineComponent({

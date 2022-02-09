@@ -1,10 +1,5 @@
 <template>
-  <input
-    :value="modelValue"
-    cols="30"
-    rows="5"
-    @input="$emit('update:modelValue', $event.target.value)"
-  />
+  <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />
 </template>
 
 <script lang="ts">

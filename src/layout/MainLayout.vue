@@ -22,6 +22,7 @@ export default defineComponent({
 .main_wrap {
   width: 640px;
   margin: 0 auto;
+  overflow: hidden;
   main {
     margin: 15vh auto 0;
   }

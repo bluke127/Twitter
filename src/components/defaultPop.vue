@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from 'vue';
-import type { popupSet } from '@/views/Login.vue';
+import type { popupSet } from '@/types/index';
 export default defineComponent({
   props: {
     popSet: {
