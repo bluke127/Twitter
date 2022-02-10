@@ -19,9 +19,9 @@ import { defineComponent, toRef, PropType } from 'vue';
 export default defineComponent({
   props: {
     styles: {
-      type: Object as PropType<{ borderBottom: string; height?: string; lineHeight?: string }>,
+      type: Object as PropType<{ CSSProperties: string | number }>,
       default: () => {
-        return { borderBottom: '2px solid #eee', height: '24px', lineHeight: '24px' };
+        return {};
       },
     },
     type: { type: String, default: 'text', required: false },

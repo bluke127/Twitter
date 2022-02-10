@@ -1,15 +1,15 @@
 <template>
   <ul>
-    <li v-for="(post, index) in storeList" :key="index"><PostInput></PostInput></li>
+    <li v-for="(post, index) in storeList" :key="index"><BaseInput></BaseInput></li>
   </ul>
 </template>
 
 <script lang="ts">
-import PostInput from '@/components/PostInput.vue';
+import BaseInput from '@/components/BaseInput.vue';
 import { defineComponent, ref, PropType } from 'vue';
 
 export default defineComponent({
-  components: { PostInput },
+  components: { BaseInput },
   props: { storeList: { type: Array as PropType<string[]> } },
   // setup() {
   //   const writeValue = ref<string>();

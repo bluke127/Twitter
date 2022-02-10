@@ -5,6 +5,6 @@ export type popupSet = {
   concelMsg: string;
 };
 
-type btnStyleType = { [key: string]: string | number };
+type btnStyleType = { CSSProperties: string | number };
 type btnEventType = string;
 export type btnType = { style?: btnStyleType; event: btnEventType };

@@ -1,15 +1,15 @@
 <template>
-  <div><PostInput v-model="writeValue"></PostInput><BaseButton :btn="setLikeBtn"></BaseButton></div>
+  <div><BaseInput v-model="writeValue"></BaseInput><BaseButton :btn="setLikeBtn"></BaseButton></div>
 </template>
 
 <script lang="ts">
-import PostInput from '@/components/PostInput.vue';
+import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { btnType } from '@/types/index';
 import { defineComponent, ref, PropType, reactive } from 'vue';
 
 export default defineComponent({
-  components: { PostInput, BaseButton },
+  components: { BaseInput, BaseButton },
   setup() {
     const writeValue = ref<string>('');
     const btnDefaultStyle = ref<{ [key: string]: string | number }>({
