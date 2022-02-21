@@ -1,7 +1,7 @@
 <template>
   <div class="header_wrap">
     <div id="title" @click="openSide">
-      Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span>
+      <!-- Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span> -->
     </div>
   </div>
 </template>

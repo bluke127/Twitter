@@ -1,28 +1,23 @@
 <template>
-  <div><BaseInput v-model="writeValue"></BaseInput><BaseButton :btn="setLikeBtn"></BaseButton></div>
+  <div>
+    <BaseInput v-model="writeValue"></BaseInput><BaseButton :setBtn="setLikeBtn"></BaseButton>
+  </div>
 </template>
 
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
-import { btnType } from '@/types/index';
+import { btnType, styleType } from '@/types/index';
 import { defineComponent, ref, PropType, reactive } from 'vue';
 
 export default defineComponent({
   components: { BaseInput, BaseButton },
   setup() {
     const writeValue = ref<string>('');
-    const btnDefaultStyle = ref<{ [key: string]: string | number }>({
-      width: '35px',
-      height: '35px',
-      backgroundRepeat: 'noRepeat',
-      backgroundSize: 'cover',
-      // backgroundImage: "`url(required('~@/assets/icon/gather.png'))`",
-    });
-    const setLikeBtn = reactive<btnType>({ style: btnDefaultStyle.value, event: 'like' });
-    const setReplyBtn = reactive<btnType>({ style: btnDefaultStyle.value, event: 'reply' });
-    const setKeepBtn = reactive<btnType>({ style: btnDefaultStyle.value, event: 'keep' });
-    return { writeValue, btnDefaultStyle, setLikeBtn, setReplyBtn, setKeepBtn };
+    const setLikeBtn = reactive<btnType>({ class: 'like', event: 'like' });
+    const setReplyBtn = reactive<btnType>({ class: 'reply', event: 'reply' });
+    const setKeepBtn = reactive<btnType>({ class: 'keep', event: 'keep' });
+    return { writeValue, setLikeBtn, setReplyBtn, setKeepBtn };
   },
 });
 </script>

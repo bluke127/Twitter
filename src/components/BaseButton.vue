@@ -11,10 +11,10 @@ export default defineComponent({
     category: {
       type: String,
     },
-    btn: {
+    setBtn: {
       type: Object as PropType<btnType>,
       default: () => {
-        return { style: {}, event: '' };
+        return { style: {}, class: '', event: '' };
       },
     },
   },

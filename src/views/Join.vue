@@ -119,7 +119,7 @@
 
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
-import { defineComponent, ref, computed, watchEffect, reactive } from 'vue';
+import { defineComponent, ref, computed, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass, isEmail, isPhone } from '@/api/validate/index';
 import { loginApi } from '@/api/index';

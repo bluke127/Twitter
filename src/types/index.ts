@@ -1,3 +1,4 @@
+import * as CSS from 'csstype';
 export type popupSet = {
   title: string;
   passage: string;
@@ -5,6 +6,6 @@ export type popupSet = {
   concelMsg: string;
 };
 
-type btnStyleType = { CSSProperties: string | number };
-type btnEventType = string;
-export type btnType = { style?: btnStyleType; event: btnEventType };
+export type styleType = CSS.Properties;
+export type eventType = string;
+export type btnType = { style?: styleType; class?: string; event: eventType };
