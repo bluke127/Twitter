@@ -1,5 +1,11 @@
 <template>
-  <button :style="btn.style ? btn.style : ''" @click="emit(btn.event)"><slot></slot></button>
+  <button
+    :style="setBtn.style ? setBtn.style : ''"
+    @click="emit(btn.event)"
+    :class="setBtn.class ? setBtn.class : ''"
+  >
+    <slot></slot>
+  </button>
 </template>
 
 <script lang="ts">
@@ -24,5 +30,16 @@ export default defineComponent({
 button {
   color: #000;
   text-align: center;
+}
+.unLike {
+  width: 30px;
+  height: 25px;
+  background: url('~@/assets/images/icon/gather.png') 0 0 no-repeat;
+  background-position: $unLike;
+  background-size: 700px 600px;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
 }
 </style>

@@ -168,7 +168,7 @@ export default defineComponent({
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            background: url('~@/assets/icon/gather.png') 0 0 no-repeat;
+            background: url('~@/assets/images/icon/gather.png') 0 0 no-repeat;
             background-size: 700px 600px;
             background-position: $down-direction;
           }
@@ -183,7 +183,7 @@ export default defineComponent({
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            background: url('~@/assets/icon/gather.png') 0 0 no-repeat;
+            background: url('~@/assets/images/icon/gather.png') 0 0 no-repeat;
             background-size: 700px 600px;
             background-position: $up-direction;
           }
