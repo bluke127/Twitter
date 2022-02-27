@@ -1,34 +1,91 @@
 <template>
   <ul>
-    <li v-for="(post, index) in list" :key="index">
-      <div><img src="" /></div>
-      <BaseInput></BaseInput><BaseButton :setBtn="setLikeBtn"></BaseButton
-      ><BaseButton :setBtn="setReplyBtn"></BaseButton>
-      <BaseButton :setBtn="setKeepBtn"></BaseButton>
+    <li v-for="(post, index) in storeList" :key="index">
+      <BaseInput><template #:label>후후</template></BaseInput>
     </li>
   </ul>
+  <div class="btn_wrap">
+    <BaseButton
+      @click="setLikeBtn"
+      @mouseenter="setLikeBtn"
+      @mouseleave="setLikeBtn"
+      :class="classes.like ? 'like' : 'unLike'"
+      v-bind="$attrs"
+    ></BaseButton>
+    <!-- <BaseButton
+      @click="setReplyBtn"
+      @mouseenter="setReplyBtn"
+      @mouseleave="setReplyBtn"
+      class="reply"
+      v-bind="$attrs"
+    ></BaseButton> -->
+    <BaseButton
+      @click="setKeepBtn"
+      @mouseenter="setKeepBtn"
+      @mouseleave="setKeepBtn"
+      :class="classes.keep ? 'keep' : 'unKeep'"
+      v-bind="$attrs"
+    ></BaseButton>
+  </div>
 </template>
 
 <script lang="ts">
-// import BaseLabel from '@/components/BaseLabel.vue';
 import BaseInput from '@/components/BaseInput.vue';
-import BaseButton from '@/components/BaseButton.vue';
-import { response, responseListType } from '@/constant/todayList';
-import { btnType } from '@/types/index';
-import { defineComponent, PropType, ref, reactive } from 'vue';
-
+import BaseButton, { btnType } from '@/components/BaseButton.vue';
+import { defineComponent, PropType, ref, toRef } from 'vue';
 export default defineComponent({
+  inheritAttrs: false,
+  props: {
+    storeList: {
+      type: Array,
+      default: () => [],
+    },
+    classes: {
+      type: Object as PropType<btnType>,
+      default: () => {},
+    },
+  },
   components: { BaseInput, BaseButton },
-  props: { storeList: { type: Array as PropType<string[]> } },
-  setup() {
-    const list = ref<responseListType | null>(response.list);
+
+  setup(props) {
     const writeValue = ref<string>('');
-    const setLikeBtn = reactive<btnType>({ class: 'like', event: 'like' });
-    const setReplyBtn = reactive<btnType>({ class: 'reply', event: 'reply' });
-    const setKeepBtn = reactive<btnType>({ class: 'keep', event: 'keep' });
-    return { list, writeValue, setLikeBtn, setReplyBtn, setKeepBtn };
+    const classes = toRef(props, 'classes');
+    const setLikeBtn = () => {
+      classes.value.like = !classes.value.like;
+    };
+    const setKeepBtn = () => {
+      classes.value.keep = !classes.value.keep;
+    };
+    return { writeValue, setLikeBtn, setKeepBtn };
   },
 });
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.btn_wrap {
+  button {
+    width: 30px;
+    height: 30px;
+    background-size: 700px 600px;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: initial;
+    background-image: url('~@/assets/images/icon/gather.png');
+    &.unLike {
+      background-position: $unLike;
+    }
+
+    &.like {
+      background-position: $like;
+    }
+    &.keep {
+      background-position: $keep;
+    }
+
+    &.unKeep {
+      background-position: $unKeep;
+    }
+  }
+}
+</style>

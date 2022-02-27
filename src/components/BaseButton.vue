@@ -1,28 +1,26 @@
 <template>
-  <button
-    :style="setBtn.style ? setBtn.style : ''"
-    @click="emit(btn.event)"
-    :class="setBtn.class ? setBtn.class : ''"
-  >
+  <component v-bind="$attrs" :is="componentType" :class="classes">
     <slot></slot>
-  </button>
+  </component>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
-
-import { btnType } from '@/types/index';
+import { defineComponent, PropType } from 'vue';
+import { knownKeyBooleanValObj } from '@/types/index';
+export type btnType = knownKeyBooleanValObj;
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     category: {
       type: String,
     },
-    setBtn: {
+    classes: {
       type: Object as PropType<btnType>,
       default: () => {
-        return { style: {}, class: '', event: '' };
+        null;
       },
     },
+    componentType: { type: String, default: 'button' },
   },
 });
 </script>
@@ -30,16 +28,6 @@ export default defineComponent({
 button {
   color: #000;
   text-align: center;
-}
-.unLike {
-  width: 30px;
-  height: 25px;
-  background: url('~@/assets/images/icon/gather.png') 0 0 no-repeat;
-  background-position: $unLike;
-  background-size: 700px 600px;
-  background-attachment: initial;
-  background-origin: initial;
-  background-clip: initial;
-  background-color: initial;
+  cursor: pointer;
 }
 </style>

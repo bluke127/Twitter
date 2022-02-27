@@ -16,7 +16,11 @@ module.exports = {
   rules: {
     // "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     // "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    
+    "no-undef": "warn",
     "no-console": "off",
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": ["warn"],
     "prettier/prettier": ['error', {
         singleQuote: true,
         semi: true,
