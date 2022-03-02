@@ -1,22 +1,22 @@
 <template>
-  <div class="base_input">
+  <div class="base_input" v-bind="$attrs">
     <input
       :type="type"
       :placeholder="placeholder"
       :readonly="readonly"
       :value="modelValue"
       :style="styles"
+      v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
-      @focus="$emit('focus')"
-      @blur="$emit('blur')"
     />
-    <span><slot name="label"></slot></span>
+    <span> <slot name="label"></slot></span>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRef, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     styles: {
       type: Object as PropType<{ CSSProperties: string | number }>,
@@ -29,10 +29,7 @@ export default defineComponent({
     readonly: { type: Boolean },
     modelValue: { type: String, required: false, default: '' },
   },
-  setup() {
-    // const value = toRef(props, 'modelValue');
-    // return { value };
-  },
+  setup() {},
 });
 </script>
 
