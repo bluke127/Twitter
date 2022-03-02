@@ -1,5 +1,5 @@
 <template>
-  <div class="base_input">
+  <div class="base_input" v-if="type !== 'file'">
     <input
       :type="type"
       :placeholder="placeholder"
@@ -10,13 +10,25 @@
       @focus="$emit('focus')"
       @blur="$emit('blur')"
     />
-    <span><slot name="label"></slot></span>
+    <slot name="label"></slot>
   </div>
+  <template v-else-if="type === 'file'">
+    <input
+      :type="type"
+      :readonly="readonly"
+      :style="styles"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
+      v-bind="$attrs"
+    />
+    <slot name="label"></slot>
+  </template>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRef, PropType } from 'vue';
+import { defineComponent, toRef, PropType } from "vue";
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     styles: {
       type: Object as PropType<{ CSSProperties: string | number }>,
@@ -24,10 +36,16 @@ export default defineComponent({
         return {};
       },
     },
-    type: { type: String, default: 'text', required: false },
-    placeholder: { type: String, required: false, default: '' },
+    labelStyle: {
+      type: Object as PropType<{ CSSProperties: string | number }>,
+      default: () => {
+        return {};
+      },
+    },
+    type: { type: String, default: "text", required: false },
+    placeholder: { type: String, required: false, default: "" },
     readonly: { type: Boolean },
-    modelValue: { type: String, required: false, default: '' },
+    modelValue: { type: String, required: false, default: "" },
   },
   setup() {
     // const value = toRef(props, 'modelValue');
