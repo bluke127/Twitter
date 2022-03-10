@@ -4,8 +4,13 @@ const instance: AxiosInstance = axios.create({
 });
 
 export const loginApi = {
-  async FETCH_LOGIN(info: { email: string; password: string }): Promise<AxiosResponse<any, any>> {
-    const response = await instance.post(`login/email=${info.email}&password=${info.password}`);
+  async FETCH_LOGIN(info: {
+    email: string;
+    password: string;
+  }): Promise<AxiosResponse<any, any>> {
+    const response = await instance.post(
+      `login/email=${info.email}&password=${info.password}`,
+    );
     return response;
   },
 };
