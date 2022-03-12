@@ -2,7 +2,12 @@
   <div>
     <div id="wrap">
       <div id="title">
-        Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span>
+        Twitter<span
+          ><img
+            :src="require('@/assets/images/logo.png')"
+            alt="logo"
+            ref="logo"
+        /></span>
       </div>
       <div id="context">
         <BaseInput
@@ -14,7 +19,10 @@
           @blur="idLabelBlur"
           ><template v-slot:label v-if="id.idValue">
             <label class="label" @click="labelClick('id')">
-              <span class="id_label" :class="!id.setIdValueBtn ? 'close' : ''"></span>
+              <span
+                class="id_label"
+                :class="!id.setIdValueBtn ? 'close' : ''"
+              ></span>
             </label> </template
         ></BaseInput>
         <BaseInput
@@ -25,28 +33,42 @@
           @blur="passLabelBlur"
           ><template v-slot:label v-if="pass.passValue">
             <label class="label" @click="labelClick('pass')">
-              <span class="pass_label" :class="!pass.setPassValueBtn ? 'close' : ''"></span>
+              <span
+                class="pass_label"
+                :class="!pass.setPassValueBtn ? 'close' : ''"
+              ></span>
             </label> </template
         ></BaseInput>
         <div class="warnMsg">
           <span v-if="checkLogin">{{ errorMsg }}</span>
         </div>
       </div>
-      <button @click="login" class="login" :class="{ active: btnActiveFlag }">로그인</button>
+      <button @click="login" class="login" :class="{ active: btnActiveFlag }">
+        로그인
+      </button>
       <router-link to="/join" class="join">회원가입</router-link>
     </div>
-    <default-pop v-if="store.state.popup.popupFlag" :popSet="popSet" @close="close"></default-pop>
+    <default-pop
+      v-if="popupFlag"
+      v-bind="$attrs"
+      :top="popupTop"
+      :body="popupBody"
+      :confirmMsg="confirmMsg"
+      :cancelMsg="cancelMsg"
+      @confirmMsg="confirmMsg"
+      @cancelMsg="cancelMsg"
+      @close="close"
+    ></default-pop>
   </div>
 </template>
 
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
-import { popupSet } from '@/types/index';
 import { defineComponent, ref, computed, watchEffect } from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass } from '@/api/validate/index';
 import { loginApi } from '@/api/index';
-import defaultPop from '@/components/defaultPop.vue';
+import defaultPop from '@/components/Popup/DefaultPopup.vue';
 type userId = {
   id: string;
   idValue: string;
@@ -60,8 +82,16 @@ type userPass = {
 export default defineComponent({
   components: { defaultPop, BaseInput },
   setup() {
-    const inputStyle = { border: '2px solid #eee', height: '40px', lineHeight: '40px' };
+    const inputStyle = {
+      border: '2px solid #eee',
+      height: '40px',
+      lineHeight: '40px',
+    };
     const store = useStore();
+    const popupTop = ref<string>('');
+    const popupBody = ref<string>('');
+    const confirmMsg = ref<string>('');
+    const cancelMsg = ref<string>('');
     const id = ref<userId>({
       id: '',
       idValue: '',
@@ -74,12 +104,23 @@ export default defineComponent({
     });
     const login = () => {
       if (!id.value.idValue || !pass.value.passValue) {
+        popupTop.value = '경고';
+        !id.value.idValue
+          ? (popupBody.value = '아이디를 입력해주시요')
+          : (popupBody.value = '비밀번호를 입력해주세요');
+        confirmMsg.value = '확인';
         store.dispatch('popup/SET_POPUP', true);
         return;
       }
       const info = { email: id.value.idValue, password: pass.value.passValue };
       loginApi.FETCH_LOGIN(info);
       store.dispatch('user/SET_EMAIL', `${id.value.idValue}`);
+    };
+    const popupFlag = computed(() => {
+      return store.state.popup.ShowPopup;
+    });
+    const setupPop = (flag: boolean) => {
+      store.dispatch('popup/SET_POPUP', flag);
     };
     const setIdLabelFlag = ref<null | string>(null);
     const idDelete = ref<boolean>(false);
@@ -117,6 +158,9 @@ export default defineComponent({
         return true;
       }
     });
+    const close = () => {
+      setupPop(false);
+    };
     const idLabelClick = () => {
       if (id.value.idValue) {
         id.value.setIdValueBtn = false;
@@ -159,20 +203,9 @@ export default defineComponent({
         return false;
       }
     });
-    const popSet = ref<popupSet>({
-      title: '',
-      passage: '',
-      confirmMsg: '',
-      concelMsg: '',
-    });
-
-    const close = () => {
-      store.dispatch('popup/SET_POPUP', false);
-    };
     return {
       id,
       pass,
-      popSet,
       idDelete,
       validateId,
       validatePass,
@@ -189,6 +222,12 @@ export default defineComponent({
       errorMsg,
       login,
       setIdLabelFlag,
+      popupTop,
+      popupBody,
+      confirmMsg,
+      cancelMsg,
+      setupPop,
+      popupFlag,
     };
   },
 });
