@@ -1,5 +1,5 @@
 <template>
-  <div class="base_input"  v-if="type !== 'file'" v-bind="$attrs">
+  <div class="base_input" v-if="type !== 'file'" v-bind="$attrs">
     <input
       :type="type"
       :placeholder="placeholder"
@@ -41,10 +41,10 @@ export default defineComponent({
         return {};
       },
     },
-    type: { type: String, default: "text", required: false },
-    placeholder: { type: String, required: false, default: "" },
+    type: { type: String, default: 'text', required: false },
+    placeholder: { type: String, required: false, default: '' },
     readonly: { type: Boolean },
-    modelValue: { type: String, required: false, default: "" },
+    modelValue: { type: String, required: false, default: '' },
   },
   setup() {},
 });
