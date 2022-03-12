@@ -8,7 +8,11 @@
         </div>
       </div>
       <div id="btnWrap">
-        <button id="confirm" :class="{ twin: popSet.concelMsg }" @click="confirm()">
+        <button
+          id="confirm"
+          :class="{ twin: popSet.concelMsg }"
+          @click="confirm()"
+        >
           {{ popSet.confirmMsg }}
         </button>
         <button

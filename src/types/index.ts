@@ -8,4 +8,5 @@ export type popupSet = {
 
 export type styleType = CSS.Properties;
 export type eventType = string;
-export type btnType = { style?: styleType; class?: string; event: eventType };
+export type knownKeyStringValObj = { [key: string]: string };
+export type knownKeyBooleanValObj = { [key: string]: boolean };
