@@ -2,18 +2,31 @@
   <div>
     <div id="wrap">
       <div id="title">
-        Twitter<span><img :src="require('@/assets/images/logo.png')" alt="logo" ref="logo" /></span>
+        Twitter<span
+          ><img
+            :src="require('@/assets/images/logo.png')"
+            alt="logo"
+            ref="logo"
+        /></span>
       </div>
       <ul id="context">
         <li v-for="(userInfo, index) in userInfoStore" :key="index">
-          <BaseInput
+          <span>{{ category[index] }}</span
+          ><BaseInput
             :styles="inputStyle"
             v-model="userInfo.value"
             @click.self="setLabelBtn(userInfo)"
             @input="[setLabelBtn(userInfo), validate(userInfo)]"
             @blur="setLabelBlur(userInfo)"
-            ><template v-slot:label v-if="userInfo.value">
-              <label class="label" @click="labelClick(userInfo.toString())">
+            ><template v-slot:label v-if="userInfo.setCheckBtn">
+              <label
+                class="label"
+                @click="
+                  () => {
+                    userInfo.value = '';
+                  }
+                "
+              >
                 <span
                   class="label_in id_label"
                   :class="!userInfo.setValueBtn ? 'close' : ''"
@@ -24,96 +37,27 @@
             <span v-if="userInfo.errorMsg">{{ userInfo.errorMsg }}</span>
           </div>
         </li>
-        <!-- <li>
-          <BaseInput
-            :styles="inputStyle"
-            :placeholder="'카카오메일 아이디, 이메일, 전화번호'"
-            v-model="id.value"
-            @click.self="setLabelBtn(id)"
-            @input="[setLabelBtn(id), validateId(id.value)]"
-            @blur="idLabelBlur"
-            ><template v-slot:label v-if="id.value">
-              <label class="label" @click="labelClick('id')">
-                <span class="label_in id_label" :class="!id.setValueBtn ? 'close' : ''"></span>
-              </label> </template
-          ></BaseInput>
-          <div class="warnMsg">
-            <span v-if="id.errorMsg">{{ id.errorMsg }}</span>
-          </div>
-        </li>
-        <li>
-          <BaseInput
-            :styles="inputStyle"
-            v-model="pass.value"
-            @click.self="setLabelBtn(pass)"
-            @input="[setLabelBtn(pass), validatePass(pass.passValue)]"
-            @blur="passLabelBlur"
-            ><template v-slot:label v-if="pass.value">
-              <label class="label" @click="labelClick('pass')">
-                <span class="label_in pass_label" :class="!pass.setValueBtn ? 'close' : ''"></span>
-              </label> </template
-          ></BaseInput>
-          <div class="warnMsg">
-            <span v-if="pass.errorMsg">{{ pass.errorMsg }}</span>
-          </div>
-        </li>
-        <li>
-          <BaseInput
-            :styles="inputStyle"
-            v-model="passConfirm.value"
-            @click.self="setLabelBtn(passConfirm)"
-            @input="[setLabelBtn(passConfirm), validatePass(pass.passValue)]"
-            @blur="passLabelBlur"
-            ><template v-slot:label v-if="passConfirm.value">
-              <label class="label" @click="labelClick('passConfirm')">
-                <span
-                  class="label_in pass_label"
-                  :class="!passConfirm.setValueBtn ? 'close' : ''"
-                ></span>
-              </label> </template
-          ></BaseInput>
-          <div class="warnMsg">
-            <span v-if="passConfirm.errorMsg">{{ passConfirm.errorMsg }}</span>
-          </div>
-        </li>
-        <li>
-          <BaseInput
-            :styles="inputStyle"
-            v-model="pass.value"
-            @click.self="setLabelBtn(pass)"
-            @input="[setLabelBtn(pass), validatePass(pass.passValue)]"
-            @blur="passLabelBlur"
-            ><template v-slot:label v-if="pass.value">
-              <label class="label" @click="labelClick('pass')">
-                <span class="label_in pass_label" :class="!pass.setValueBtn ? 'close' : ''"></span>
-              </label> </template
-          ></BaseInput>
-          <div class="warnMsg">
-            <span v-if="checkLogin">{{ errorMsg }}</span>
-          </div>
-        </li>
-        <li>
-          <BaseInput
-            :styles="inputStyle"
-            v-model="pass.value"
-            @click.self="setLabelBtn(pass)"
-            @input="[setLabelBtn(pass), validatePass(pass.passValue)]"
-            @blur="passLabelBlur"
-            ><template v-slot:label v-if="pass.value">
-              <label class="label" @click="labelClick('pass')">
-                <span class="label_in pass_label" :class="!pass.setValueBtn ? 'close' : ''"></span>
-              </label> </template
-          ></BaseInput>
-          <div class="warnMsg">
-            <span v-if="checkLogin">{{ errorMsg }}</span>
-          </div> 
-        </li>-->
       </ul>
-
-      <button @click="login" class="login" :class="{ active: canJoin }">로그인</button>
-      <router-link to="/join" class="join">회원가입</router-link>
+      <button
+        @click="joinInfo"
+        class="join_btn"
+        :class="{ active: btnActiveFlag }"
+      >
+        회원가입
+      </button>
+      <router-link to="/auth/join" class="join">로그인</router-link>
     </div>
-    <default-pop v-if="store.state.popup.popupFlag" :popSet="popSet" @close="close"></default-pop>
+    <default-pop
+      v-if="popupFlag"
+      v-bind="$attrs"
+      :top="popupTop"
+      :body="popupBody"
+      :confirmMsg="confirmMsg"
+      :cancelMsg="cancelMsg"
+      @confirmMsg="confirmMsg"
+      @cancelMsg="cancelMsg"
+      @close="close"
+    ></default-pop>
   </div>
 </template>
 
@@ -122,8 +66,8 @@ import BaseInput from '@/components/BaseInput.vue';
 import { defineComponent, ref, computed, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass, isEmail, isPhone } from '@/api/validate/index';
-import { loginApi } from '@/api/index';
-import defaultPop from '@/components/defaultPop.vue';
+import { joinApi } from '@/api/index';
+import defaultPop from '@/components/Popup/DefaultPopup.vue';
 type userInfo = {
   value: string | null;
   setValueBtn: boolean;
@@ -132,8 +76,28 @@ type userInfo = {
 export default defineComponent({
   components: { defaultPop, BaseInput },
   setup() {
-    const inputStyle = { border: '2px solid #eee', height: '40px', lineHeight: '40px' };
+    const inputStyle = {
+      border: '2px solid #eee',
+      height: '40px',
+      lineHeight: '40px',
+    };
+
+    const popupTop = ref<string>('');
+    const popupBody = ref<string>('');
+    const confirmMsg = ref<string>('');
+    const cancelMsg = ref<string>('');
+
+    const popupFlag = computed(() => {
+      return store.state.popup.ShowPopup;
+    });
+    const setupPop = (flag: boolean) => {
+      store.dispatch('popup/SET_POPUP', flag);
+    };
+    const close = () => {
+      setupPop(false);
+    };
     const store = useStore();
+    const category = ['아이디', '비밀번호', '비밀번호', '이메일', '전화번호'];
     const id = ref<userInfo>({
       value: null,
       setValueBtn: false,
@@ -166,32 +130,16 @@ export default defineComponent({
       email.value,
       phone.value,
     ]);
-    const login = () => {
-      if (
-        !id.value.value ||
-        !pass.value.value ||
-        !passConfirm.value.value ||
-        !email.value.value ||
-        !phone.value.value
-      ) {
-        store.dispatch('popup/SET_POPUP', true);
-        return;
-      }
-      const info = { email: id.value.value, password: pass.value.value };
-      loginApi.FETCH_LOGIN(info);
-      store.dispatch('user/SET_EMAIL', `${id.value.value}`);
-    };
     const validate = (info: userInfo) => {
-      if (info === id.value) {
-        validateId(id.value.value!);
-      } else if (info === pass.value) {
-        validatePass(pass.value.value!);
-      } else if (info === passConfirm.value) {
-        validatePassConfirm(passConfirm.value.value!);
-      } else if (info === email.value) {
-        validateEmail(email.value.value!);
-      } else if (info === phone.value) {
-        validatePhone(phone.value.value!);
+      if (
+        !validateId(id.value.value!) ||
+        !validatePass(pass.value.value!) ||
+        !validatePass(pass.value.value!) ||
+        !validatePassConfirm(passConfirm.value.value!) ||
+        !validateEmail(email.value.value!) ||
+        !validatePhone(phone.value.value!)
+      ) {
+        return false;
       }
     };
     const validateId = (info: string) => {
@@ -276,10 +224,10 @@ export default defineComponent({
     const setLabelBtn = (category: userInfo) => {
       if (ref(category).value) {
         ref(category).value.setValueBtn = false;
+        // window.addEventListener('click', e => {
+        //   console.log(e);
+        // });
       }
-      // if (category.value.idValue) {
-      //   category.value.setIdValueBtn = false;
-      // }
     };
     const setLabelBlur = (category: userInfo) => {
       if (ref(category).value.setValueBtn) {
@@ -309,8 +257,7 @@ export default defineComponent({
         }
       }
     };
-
-    const errorMsg = ref<string>('');
+    const joinInfo = () => {};
     const btnActiveFlag = computed(() => {
       if (checkJoin.value) {
         return true;
@@ -318,28 +265,13 @@ export default defineComponent({
         return false;
       }
     });
-    const popSet = ref<{
-      title: string;
-      passage: string;
-      confirmMsg: string;
-      concelMsg: string;
-    }>({
-      title: '',
-      passage: '',
-      confirmMsg: '',
-      concelMsg: '',
-    });
 
-    const close = () => {
-      store.dispatch('popup/SET_POPUP', false);
-    };
     return {
       id,
       pass,
       passConfirm,
       email,
       phone,
-      popSet,
       validateId,
       validatePass,
       checkJoin,
@@ -353,7 +285,14 @@ export default defineComponent({
       close,
       store,
       inputStyle,
-      login,
+      category,
+      joinInfo,
+      popupTop,
+      popupBody,
+      confirmMsg,
+      cancelMsg,
+      setupPop,
+      popupFlag,
     };
   },
 });
@@ -424,7 +363,7 @@ input {
     line-height: 1;
   }
 }
-.login {
+.join_btn {
   width: 50%;
   margin: 0 auto 30px;
   border-radius: 10px;
@@ -438,10 +377,9 @@ input {
   cursor: pointer;
   font-family: 'AppleSDGothicNeoB00';
 }
-.login.active {
+.join_btn.active {
   background-color: salmon;
 }
-
 .label {
   min-width: 20px;
   min-height: 20px;
