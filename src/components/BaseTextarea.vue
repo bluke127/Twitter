@@ -1,6 +1,5 @@
 <template>
   <textarea
-    :type="type"
     :placeholder="placeholder"
     :readonly="readonly"
     :value="modelValue"
@@ -23,7 +22,10 @@ export default defineComponent({
     },
     placeholder: { type: String, required: false, default: '' },
     readonly: { type: Boolean },
-    modelValue: { type: String, required: false, default: '' },
+    modelValue: {
+      type: String as PropType<string>,
+      required: false,
+    },
   },
   setup() {},
 });

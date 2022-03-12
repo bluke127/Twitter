@@ -2,13 +2,13 @@ import { Module, ActionContext, ActionTree } from 'vuex';
 import { RootState } from '../index';
 
 const state = {
-  popupFlag: false,
+  ShowPopup: false,
 };
 export type popupRootState = typeof state;
 
 const mutations = {
   SET_POPUP(state: popupRootState, flag: boolean): void {
-    state.popupFlag = flag;
+    state.ShowPopup = flag;
   },
 };
 type Mutations = typeof mutations;

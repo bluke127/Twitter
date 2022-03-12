@@ -1,7 +1,12 @@
 import { Module, ActionContext, ActionTree } from 'vuex';
 import { RootState } from '../index';
 
-const state: { id: string; email: string; password: string; autoLogin: boolean } = {
+const state: {
+  id: string;
+  email: string;
+  password: string;
+  autoLogin: boolean;
+} = {
   id: '',
   email: '',
   password: '',
@@ -44,10 +49,16 @@ const actions: ActionTree<UserRootState, RootState> = {
   [ActionTypes.SET_EMAIL](context: UserActionContext, payload: string): void {
     context.commit('SET_EMAIL', payload);
   },
-  [ActionTypes.SET_PASSWORD](context: UserActionContext, payload: string): void {
+  [ActionTypes.SET_PASSWORD](
+    context: UserActionContext,
+    payload: string,
+  ): void {
     context.commit('SET_PASSWORD', payload);
   },
-  [ActionTypes.SET_AUTO_LOGIN](context: UserActionContext, flag: boolean): void {
+  [ActionTypes.SET_AUTO_LOGIN](
+    context: UserActionContext,
+    flag: boolean,
+  ): void {
     context.commit('SET_AUTO_LOGIN', flag);
   },
 };
