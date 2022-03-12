@@ -15,7 +15,7 @@
           :placeholder="'카카오메일 아이디, 이메일, 전화번호'"
           v-model="id.idValue"
           @click.self="idLabelClick"
-          @input="[idLabelClick(), validateId(id.idValue)]"
+          @input="idLabelClick()"
           @blur="idLabelBlur"
           ><template v-slot:label v-if="id.idValue">
             <label class="label" @click="labelClick('id')">
@@ -29,7 +29,7 @@
           :styles="inputStyle"
           v-model="pass.passValue"
           @click.self="passLabelClick"
-          @input="[passLabelClick(), validatePass(pass.passValue)]"
+          @input="passLabelClick()"
           @blur="passLabelBlur"
           ><template v-slot:label v-if="pass.passValue">
             <label class="label" @click="labelClick('pass')">
@@ -40,7 +40,7 @@
             </label> </template
         ></BaseInput>
         <div class="warnMsg">
-          <span v-if="checkLogin">{{ errorMsg }}</span>
+          <span v-if="!checkLogin">{{ errorMsg }}</span>
         </div>
       </div>
       <button @click="login" class="login" :class="{ active: btnActiveFlag }">
@@ -71,12 +71,12 @@ import { loginApi } from '@/api/index';
 import defaultPop from '@/components/Popup/DefaultPopup.vue';
 type userId = {
   id: string;
-  idValue: string;
+  idValue: string | null;
   setIdValueBtn: boolean;
 };
 type userPass = {
   pass: string;
-  passValue: string;
+  passValue: string | null;
   setPassValueBtn: boolean;
 };
 export default defineComponent({
@@ -94,25 +94,26 @@ export default defineComponent({
     const cancelMsg = ref<string>('');
     const id = ref<userId>({
       id: '',
-      idValue: '',
+      idValue: null,
       setIdValueBtn: false,
     });
     const pass = ref<userPass>({
       pass: '',
-      passValue: '',
+      passValue: null,
       setPassValueBtn: false,
     });
     const login = () => {
-      if (!id.value.idValue || !pass.value.passValue) {
+      if (!btnActiveFlag.value) {
         popupTop.value = '경고';
-        !id.value.idValue
-          ? (popupBody.value = '아이디를 입력해주시요')
-          : (popupBody.value = '비밀번호를 입력해주세요');
+        popupBody.value = errorMsg as any;
         confirmMsg.value = '확인';
         store.dispatch('popup/SET_POPUP', true);
         return;
       }
-      const info = { email: id.value.idValue, password: pass.value.passValue };
+      const info = {
+        email: id.value.idValue as string,
+        password: pass.value.passValue as string,
+      };
       loginApi.FETCH_LOGIN(info);
       store.dispatch('user/SET_EMAIL', `${id.value.idValue}`);
     };
@@ -124,38 +125,59 @@ export default defineComponent({
     };
     const setIdLabelFlag = ref<null | string>(null);
     const idDelete = ref<boolean>(false);
-    const validateId = (id: string) => {
-      if (isId(id)) {
-        if (!checkLogin.value) {
-          errorMsg.value = '';
-          return true;
-        }
-      } else {
-        errorMsg.value = '아이디의 형식이 맞지 않습니다';
-        return false;
-      }
-    };
-    const validatePass = (pass: string) => {
-      if (isPass(pass)) {
-        if (!checkLogin.value) {
-          errorMsg.value = '';
-          return true;
-        }
-      } else {
-        errorMsg.value = '비밀번호의 형식이 맞지 않습니다';
-        return false;
-      }
-    };
+    // const validateId = (id: string) => {
+    //   if (!isId(id)) {
+    //     errorMsg.value = '아이디의 형식이 맞지 않습니다';
+    //     return false;
+    //   } else if (!id) {
+    //     errorMsg.value = '아이디를 입력해주세요';
+    //     return false;
+    //   } else {
+    //     if (checkLogin.value) {
+    //       errorMsg.value = '';
+    //       return true;
+    //     }
+    //   }
+    // };
+    // const validatePass = (pass: string) => {
+    //   if (!isPass(pass)) {
+    //     errorMsg.value = '비밀번호의 형식이 맞지 않습니다';
+    //     return false;
+    //   } else if (!pass) {
+    //     errorMsg.value = '비밀번호를 입력해주세요';
+    //     return false;
+    //   } else {
+    //     if (checkLogin.value) {
+    //       errorMsg.value = '';
+    //       return true;
+    //     }
+    //   }
+    // };
     const checkLogin = computed(() => {
       if (
-        isId(id.value.idValue) &&
-        id.value.idValue &&
-        isPass(pass.value.passValue) &&
-        pass.value.passValue
+        (isId(id.value.idValue as string) &&
+          id.value.idValue &&
+          isPass(pass.value.passValue as string) &&
+          pass.value.passValue) ||
+        (id.value.idValue === null && pass.value.passValue === null)
       ) {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
+      }
+    });
+    const errorMsg = computed((): string => {
+      if (!isId(id.value.idValue as string)) {
+        return '아이디의 형식이 맞지 않습니다';
+      } else if (!id.value.idValue) {
+        return '비밀번호를 입력해주세요';
+      }
+      if (!isPass(pass.value.passValue as string)) {
+        return '비밀번호의 형식이 맞지 않습니다';
+      } else if (!pass.value.passValue) {
+        return '비밀번호를 입력해주세요';
+      } else {
+        return '';
       }
     });
     const close = () => {
@@ -194,10 +216,13 @@ export default defineComponent({
         }
       }
     };
-
-    const errorMsg = ref<string>('');
     const btnActiveFlag = computed(() => {
-      if (id.value.idValue && pass.value.passValue) {
+      if (
+        isId(id.value.idValue as string) &&
+        id.value.idValue &&
+        isPass(pass.value.passValue as string) &&
+        pass.value.passValue
+      ) {
         return true;
       } else {
         return false;
@@ -207,8 +232,8 @@ export default defineComponent({
       id,
       pass,
       idDelete,
-      validateId,
-      validatePass,
+      // validateId,
+      // validatePass,
       checkLogin,
       idLabelClick,
       idLabelBlur,
