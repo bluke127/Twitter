@@ -1,7 +1,7 @@
 export const response = {
   list: [
     {
-      name: '라이언',
+      id: '라이언',
       topImg: require('@/assets/images/00_chac.png'),
       createTime: '2022년 01월 07일 23시 01분',
       like: 61,
@@ -12,26 +12,9 @@ export const response = {
         require('@/assets/images/00_product01.jpg'),
       ],
       reply: ['어쩌고', '저쩌고', '불라불라', '나나'],
-      buy: [
-        {
-          img: require('@/assets/images/00_buy00.jpg'),
-          title: '안고자는애착바디필로우_라이언',
-          price: 20000,
-        },
-        {
-          img: require('@/assets/images/00_buy01.jpg'),
-          title: '안고자는애착바디필로우_어피치',
-          price: 20000,
-        },
-        {
-          img: require('@/assets/images/00_buy02.jpg'),
-          title: '안고자는애착바디필로우_춘식',
-          price: 20000,
-        },
-      ],
     },
     {
-      name: '어피치',
+      id: '어피치',
       topImg: require('@/assets/images/01_chac.png'),
       createTime: '2022년 01월 17일 10시 01분',
       like: 49,
@@ -44,10 +27,9 @@ export const response = {
         require('@/assets/images/01_product03.jpg'),
       ],
       reply: ['어쩌고', '저쩌고', '불라불라', '나나'],
-      buy: [],
     },
     {
-      name: '조르디',
+      id: '조르디',
       topImg: require('@/assets/images/02_chac.png'),
       createTime: '2022년 01월 19일 23시 01분',
       like: 3000,
@@ -59,16 +41,15 @@ export const response = {
         require('@/assets/images/02_product02.jpg'),
       ],
       reply: ['어쩌고', '저쩌고', '호호호호호ㅗ로롤', '나나'],
-      buy: [],
     },
     // {
-    //   name: '라이언',
+    //   id: '라이언',
     //   createTime: '2022년 01월 27일 23시 01분',
     //   like: 61,
     //   title: '데스크테리어 종결자',
     //   content: '선없는 충전이 필요하세요?➰🔋얼리어답터 춘식에게 맡겨주세요',
     //   reply: ['어쩌고', '저쩌고', '불라불라', '나나'],
-    //   buy: [],
+    //
     //   img: [
     //     'https://t1.kakaocdn.net/friends/prod/main_tab/feed/media/media_1_20220117160133.jpg',
     //     'https://t1.kakaocdn.net/friends/prod/main_tab/feed/media/media_2_20220117160133.jpg',
@@ -77,7 +58,7 @@ export const response = {
     //   ],
     // },
     // {
-    //   name: '라이언',
+    //   id: '라이언',
     //   createTime: '2022년 01월 27일 23시 01분',
     //   like: 61,
     //   title: '데스크테리어 종결자',
@@ -90,7 +71,7 @@ export const response = {
     //   ],
     // },
     // {
-    //   name: '라이언',
+    //   id: '라이언',
     //   createTime: '2022년 01월 27일 23시 01분',
     //   like: 61,
     //   title: '데스크테리어 종결자',
