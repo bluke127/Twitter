@@ -2,36 +2,39 @@
   <div>
     <div id="wrap">
       <div id="title">
-        Twitter<span
+        Twitter
+        <!-- <span
           ><img
             :src="require('@/assets/images/logo.png')"
             alt="logo"
             ref="logo"
-        /></span>
+        /></span> -->
       </div>
       <ul id="context">
         <li v-for="(userInfo, index) in userInfoStore" :key="index">
-          <span>{{ category[index] }}{{ userInfo.setValueBtn }}</span
-          ><BaseInput
-            :styles="inputStyle"
-            v-model="userInfo.value"
-            @click="setLabelBtn(userInfo)"
-            @input="[setLabelBtn(userInfo), validate(userInfo)]"
-            ><template v-slot:label v-if="userInfo.setValueBtn">
-              <label
-                class="label"
-                @click.stop="
-                  () => {
-                    userInfo.value = '';
-                  }
-                "
-              >
-                <span
-                  class="label_in id_label"
-                  :class="userInfo.setValueBtn ? 'close' : ''"
-                ></span>
-              </label> </template
-          ></BaseInput>
+          <div class="insert_wrap">
+            <span class="category">{{ category[index] }}</span
+            ><BaseInput
+              :styles="inputStyle"
+              v-model="userInfo.value"
+              @click="setLabelBtn(userInfo)"
+              @input="[setLabelBtn(userInfo), validate(userInfo)]"
+              ><template v-slot:label v-if="userInfo.setValueBtn">
+                <label
+                  class="label"
+                  @click.stop="
+                    () => {
+                      userInfo.value = '';
+                    }
+                  "
+                >
+                  <span
+                    class="label_in id_label"
+                    :class="userInfo.setValueBtn ? 'close' : ''"
+                  ></span>
+                </label> </template
+            ></BaseInput>
+          </div>
           <div class="warnMsg">
             <span v-if="userInfo.errorMsg">{{ userInfo.errorMsg }}</span>
           </div>
@@ -364,6 +367,16 @@ export default defineComponent({
 }
 #context {
   width: 100%;
+  .insert_wrap {
+    display: flex;
+    .category {
+      width: 30%;
+      line-height: 40px;
+    }
+    input {
+      flex: 1;
+    }
+  }
 }
 label {
   display: inline-block;
@@ -382,9 +395,6 @@ input {
   border-bottom: 2px solid #000;
   background: transparent;
   color: #fff;
-}
-#context span {
-  display: block;
 }
 .warnMsg {
   min-height: 7vh;
