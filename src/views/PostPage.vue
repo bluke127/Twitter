@@ -1,23 +1,24 @@
 <template>
-  <div>
+  <div class="post_wrap">
     <ul class="post_store_wrap">
       <li v-for="(post, index) in storeList" :key="index">
         <Post :readonly="true" :storeValue="post.content"
           ><template #btn>
             <div class="btn_wrap">
               <BaseButton
-                @click="setLikeBtn"
-                @mouseenter="setLikeBtn(index)"
-                @mouseleave="setLikeBtn(index)"
+                @click="
+                  setLikeBtn(index, buttonClass.storeBtnClass[index].like)
+                "
                 :class="
                   buttonClass.storeBtnClass[index].like ? 'like' : 'unLike'
                 "
                 v-bind="$attrs"
               ></BaseButton>
+              <span v-if="post.like">
+                {{ post.like }}
+              </span>
               <BaseButton
-                @click="setKeepBtn"
-                @mouseenter="setKeepBtn(index)"
-                @mouseleave="setKeepBtn(index)"
+                @click="setKeepBtn(index)"
                 :class="
                   buttonClass.storeBtnClass[index].keep ? 'keep' : 'unKeep'
                 "
@@ -60,9 +61,14 @@ export default defineComponent({
       storeBtnClass: [],
       check: true,
     });
-    const setLikeBtn = (i: number) => {
+    const setLikeBtn = (i: number, likeFlag: boolean) => {
+      // if(e && e.type==='click'){
+      // buttonClass.value.storeBtnClass[i].like =
+      // !buttonClass.value.storeBtnClass[i].like;
+      // }
       buttonClass.value.storeBtnClass[i].like =
         !buttonClass.value.storeBtnClass[i].like;
+      controlLike(i, likeFlag);
     };
     const setKeepBtn = (i: number) => {
       buttonClass.value.storeBtnClass[i].keep =
@@ -75,9 +81,12 @@ export default defineComponent({
         buttonClass.value.check = true;
       }
     };
-    const input = (val: string) => {
-      writeValue.value = val;
-      setCheckBtn();
+    const controlLike = (i: number, like: boolean) => {
+      if (like) {
+        storeList.value[i].like = storeList.value[i].like + 1;
+      } else {
+        storeList.value[i].like = storeList.value[i].like - 1;
+      }
     };
     onBeforeMount(() => {
       console.log(ref());
@@ -92,57 +101,61 @@ export default defineComponent({
       setLikeBtn,
       setKeepBtn,
       setCheckBtn,
+      controlLike,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.post_store_wrap,
-.post_write_wrap {
-  width: 60%;
-  li {
-    margin-bottom: 1%;
+.post_wrap {
+  flex: 1;
+  .post_store_wrap,
+  .post_write_wrap {
+    width: 60%;
+    li {
+      margin-bottom: 1%;
+    }
+
+    ::v-deep textarea {
+      width: 100%;
+      padding: 16px;
+      min-height: 10vh;
+      border-radius: 20px;
+      display: flex;
+    }
   }
 
-  ::v-deep textarea {
-    width: 100%;
-    padding: 16px;
-    min-height: 10vh;
-    border-radius: 20px;
-    display: flex;
-  }
-}
+  .btn_wrap {
+    button {
+      width: 30px;
+      height: 30px;
+      background-size: 700px 600px;
+      background-attachment: initial;
+      background-origin: initial;
+      background-clip: initial;
+      background-color: initial;
+      background-image: url('~@/assets/images/icon/gather.png');
+      &.unLike {
+        background-position: $unLike;
+      }
 
-.btn_wrap {
-  button {
-    width: 30px;
-    height: 30px;
-    background-size: 700px 600px;
-    background-attachment: initial;
-    background-origin: initial;
-    background-clip: initial;
-    background-color: initial;
-    background-image: url('~@/assets/images/icon/gather.png');
-    &.unLike {
-      background-position: $unLike;
-    }
+      &.like {
+        background-position: $like;
+      }
+      &.keep {
+        background-position: $keep;
+      }
 
-    &.like {
-      background-position: $like;
-    }
-    &.keep {
-      background-position: $keep;
-    }
-
-    &.unKeep {
-      background-position: $unKeep;
-    }
-    &.unCheck {
-      background-position: $unCheck;
-    }
-    &.check {
-      background-position: $check;
+      &.unKeep {
+        background-position: $unKeep;
+      }
+      &.unCheck {
+        background-position: $unCheck;
+      }
+      &.check {
+        background-position: $check;
+      }
     }
   }
 }
