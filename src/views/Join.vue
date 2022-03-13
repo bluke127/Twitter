@@ -11,17 +11,16 @@
       </div>
       <ul id="context">
         <li v-for="(userInfo, index) in userInfoStore" :key="index">
-          <span>{{ category[index] }}</span
+          <span>{{ category[index] }}{{ userInfo.setValueBtn }}</span
           ><BaseInput
             :styles="inputStyle"
             v-model="userInfo.value"
-            @click.self="setLabelBtn(userInfo)"
+            @click="setLabelBtn(userInfo)"
             @input="[setLabelBtn(userInfo), validate(userInfo)]"
-            @blur="setLabelBlur(userInfo)"
-            ><template v-slot:label v-if="userInfo.setCheckBtn">
+            ><template v-slot:label v-if="userInfo.setValueBtn">
               <label
                 class="label"
-                @click="
+                @click.stop="
                   () => {
                     userInfo.value = '';
                   }
@@ -29,7 +28,7 @@
               >
                 <span
                   class="label_in id_label"
-                  :class="!userInfo.setValueBtn ? 'close' : ''"
+                  :class="userInfo.setValueBtn ? 'close' : ''"
                 ></span>
               </label> </template
           ></BaseInput>
@@ -56,6 +55,7 @@
       :cancelMsg="cancelMsg"
       @confirmMsg="confirmMsg"
       @cancelMsg="cancelMsg"
+      @confirm="confirm"
       @close="close"
     ></default-pop>
   </div>
@@ -63,6 +63,7 @@
 
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
+import router from '@/router';
 import { defineComponent, ref, computed, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass, isEmail, isPhone } from '@/api/validate/index';
@@ -130,7 +131,7 @@ export default defineComponent({
       email.value,
       phone.value,
     ]);
-    const validate = (info: userInfo) => {
+    const validate = () => {
       if (
         !validateId(id.value.value!) ||
         !validatePass(pass.value.value!) ||
@@ -206,15 +207,21 @@ export default defineComponent({
       }
     };
     const checkJoin = computed(() => {
-      if (id.value.value === null) {
+      if (
+        !id.value.value ||
+        !pass.value.value ||
+        !passConfirm.value.value ||
+        !email.value.value ||
+        !phone.value.value
+      ) {
         return false;
       }
       if (
-        validateId(id.value.value!) &&
-        validatePass(pass.value.value!) &&
-        validatePassConfirm(passConfirm.value.value!) &&
-        validateEmail(email.value.value!) &&
-        validatePhone(phone.value.value!)
+        !validateId(id.value.value!) ||
+        !validatePass(pass.value.value!) ||
+        !validatePassConfirm(passConfirm.value.value!) ||
+        !validateEmail(email.value.value!) ||
+        !validatePhone(phone.value.value!)
       ) {
         return false;
       } else {
@@ -222,42 +229,69 @@ export default defineComponent({
       }
     });
     const setLabelBtn = (category: userInfo) => {
-      if (ref(category).value) {
-        ref(category).value.setValueBtn = false;
-        // window.addEventListener('click', e => {
-        //   console.log(e);
-        // });
+      console.log(ref(category).value);
+      if (!ref(category).value.setValueBtn) {
+        ref(category).value.setValueBtn = true;
+        window.addEventListener('click', e => {
+          setLabelBlur(category);
+        });
       }
     };
     const setLabelBlur = (category: userInfo) => {
       if (ref(category).value.setValueBtn) {
-        ref(category).value.setValueBtn = true;
+        ref(category).value.setValueBtn = false;
       }
     };
-    const passLabelClick = () => {
-      if (pass.value.value) {
-        pass.value.setValueBtn = false;
-      }
-    };
-    const passLabelBlur = () => {
-      if (pass.value.value) {
-        pass.value.setValueBtn = true;
-      }
-    };
-    const labelClick = (category: string) => {
-      if (category === 'id') {
-        if (id.value.value && id.value.setValueBtn) {
-          id.value.setValueBtn = false;
-          id.value.value = '';
+    const joinInfo = async () => {
+      if (!btnActiveFlag.value) {
+        popupTop.value = '경고';
+        validate();
+        const joinErrorMsg = [
+          id.value.errorMsg,
+          pass.value.errorMsg,
+          passConfirm.value.errorMsg,
+          email.value.errorMsg,
+          phone.value.errorMsg,
+        ];
+
+        for (let i = 0; i < joinErrorMsg.length; i++) {
+          if (joinErrorMsg[i] !== '') {
+            popupBody.value = joinErrorMsg[i];
+            break;
+          }
         }
+        confirmMsg.value = '확인';
+        store.dispatch('popup/SET_POPUP', true);
+        return;
+      }
+      try {
+        const response = await joinApi.FETCH_JOIN();
+        console.log(response);
+        popupTop.value = '알람';
+        popupBody.value = '회원가입이 되었습니다';
+        localStorage.setItem(
+          'joinInfo',
+          JSON.stringify({
+            id: id.value.value,
+            pass: pass.value.value,
+            email: email.value.value,
+            phone: phone.value.value,
+          }),
+        );
+        store.dispatch('popup/SET_POPUP', true);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const confirmFlag = ref<boolean>(false);
+    const confirm = () => {
+      if (confirmFlag.value) {
+        router.push('/post');
+        return;
       } else {
-        if (pass.value.value && pass.value.setValueBtn) {
-          pass.value.setValueBtn = false;
-          pass.value.value = '';
-        }
+        close();
       }
     };
-    const joinInfo = () => {};
     const btnActiveFlag = computed(() => {
       if (checkJoin.value) {
         return true;
@@ -277,8 +311,6 @@ export default defineComponent({
       checkJoin,
       setLabelBtn,
       setLabelBlur,
-      labelClick,
-      passLabelClick,
       validate,
       btnActiveFlag,
       userInfoStore,
@@ -293,6 +325,8 @@ export default defineComponent({
       cancelMsg,
       setupPop,
       popupFlag,
+      confirm,
+      confirmFlag,
     };
   },
 });

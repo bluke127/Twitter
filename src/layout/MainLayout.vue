@@ -1,20 +1,20 @@
 <template>
   <div class="main_wrap">
     <MainHeader class="header_wrap"></MainHeader>
-    <main><slot></slot></main>
+    <main><slot name="side_menu"></slot><slot></slot></main>
     <MainFooter></MainFooter>
-    <SideMenu></SideMenu>
+    <!-- <SideMenu></SideMenu> -->
   </div>
 </template>
 
 <script lang="ts">
 import MainHeader from '@/components/Header.vue';
 import MainFooter from '@/components/Footer.vue';
-import SideMenu from '@/components/SideMenu.vue';
+// import SideMenu from '@/components/SideMenu.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  components: { MainHeader, MainFooter, SideMenu },
+  components: { MainHeader, MainFooter },
 });
 </script>
 
@@ -25,6 +25,7 @@ export default defineComponent({
   overflow: hidden;
   main {
     margin: 15vh auto 0;
+    display: flex;
   }
 }
 </style>

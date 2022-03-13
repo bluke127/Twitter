@@ -1,5 +1,8 @@
 <template>
-  <div class="popup_wrap">
+  <div
+    class="popup_wrap"
+    @click.self="store.dispatch('popup/SET_POPUP', false)"
+  >
     <div class="popup">
       <div class="popup_top">{{ top }}</div>
       <div class="popup_body">
@@ -10,7 +13,7 @@
           confirmMsg
         }}</BaseButton
         ><BaseButton
-          v-if="confirmMsg"
+          v-if="cancelMsg"
           class="unActive"
           @click="$emit('close')"
           >{{ cancelMsg }}</BaseButton
