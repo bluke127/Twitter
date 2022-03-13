@@ -43,10 +43,14 @@
           <span v-if="!checkLogin">{{ errorMsg }}</span>
         </div>
       </div>
-      <button @click="login" class="login" :class="{ active: btnActiveFlag }">
+      <button
+        @click="login"
+        class="login_btn"
+        :class="{ active: btnActiveFlag }"
+      >
         로그인
       </button>
-      <router-link to="/join" class="join">회원가입</router-link>
+      <router-link to="/auth/join" class="join">회원가입</router-link>
     </div>
     <default-pop
       v-if="popupFlag"
@@ -323,7 +327,7 @@ input {
     line-height: 1;
   }
 }
-.login {
+.login_btn {
   width: 50%;
   margin: 0 auto 30px;
   border-radius: 10px;
@@ -337,7 +341,7 @@ input {
   cursor: pointer;
   font-family: 'AppleSDGothicNeoB00';
 }
-.login.active {
+.login_btn.active {
   background-color: salmon;
 }
 

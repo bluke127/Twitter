@@ -12,13 +12,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Login',
         component: () => import('@/views/Login.vue'),
       },
-    ],
-  },
-  {
-    path: '/auth/join',
-    redirect: '/auth/join',
-    component: () => import('@/views/MainPage.vue'),
-    children: [
       {
         path: '/auth/join',
         name: 'Join',
@@ -26,6 +19,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+
   {
     path: '/',
     name: 'Main',
