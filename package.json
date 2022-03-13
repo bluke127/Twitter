@@ -11,10 +11,12 @@
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "node-scss": "^7.0.1",
+    "reactive-css-properties": "1.5.6",
     "sass": "^1.49.7",
     "sass-loader": "10.0.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue3-mobile-detection": "^1.0.5",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

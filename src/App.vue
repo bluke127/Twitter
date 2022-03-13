@@ -3,6 +3,7 @@
 </template>
 <style lang="scss">
 @import 'assets/styles/common.scss';
+@import 'assets/styles/mixin.scss';
 #app {
   font-family: NanumSquareB;
   font-style: normal;

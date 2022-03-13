@@ -16,7 +16,7 @@
           ></label></template
       ></BaseInput>
       <div>
-        <p>프로필</p>
+        <p>모바일프로필</p>
         <BaseTextarea
           :readonly="!editFlag"
           :class="editFlag ? 'editing' : ''"
@@ -33,7 +33,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import BaseInput from '@/components/BaseInput.vue';
-import BaseTextarea from './BaseTextarea.vue';
+import BaseTextarea from '@/components/BaseTextarea.vue';
 
 export default defineComponent({
   components: { BaseInput, BaseTextarea },
@@ -85,7 +85,7 @@ label {
   height: 100px;
   border-radius: 50px;
   cursor: pointer;
-  background-color: blue;
+  background-color: red;
   background-size: cover;
   display: inline-block;
 }
