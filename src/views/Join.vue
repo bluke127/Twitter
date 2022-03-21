@@ -7,11 +7,13 @@
           <div class="insert_wrap">
             <span class="category">{{ category[index] }}</span
             ><BaseInput
-              :styles="
-                (inputStyle,
+              :styles="inputStyle"
+              :status="
                 userInfo.errorMsg
-                  ? 'border:2px solid red'
-                  : 'border:2px solid blue')
+                  ? false
+                  : userInfo.errorMsg === null
+                  ? null
+                  : true
               "
               v-model="userInfo.value"
               @click="setLabelBtn(userInfo)"
@@ -72,7 +74,7 @@ import defaultPop from "@/components/Popup/DefaultPopup.vue";
 type userInfo = {
   value: string | null;
   setValueBtn: boolean;
-  errorMsg: string;
+  errorMsg: string | null;
 };
 export default defineComponent({
   components: { defaultPop, BaseInput },
@@ -107,22 +109,22 @@ export default defineComponent({
     const pass = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: "",
+      errorMsg: null,
     });
     const passConfirm = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: "",
+      errorMsg: null,
     });
     const email = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: "",
+      errorMsg: null,
     });
     const phone = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: "",
+      errorMsg: null,
     });
     const userInfoStore = reactive([
       id.value,
@@ -232,7 +234,7 @@ export default defineComponent({
       console.log(ref(category).value);
       if (!ref(category).value.setValueBtn) {
         ref(category).value.setValueBtn = true;
-        window.addEventListener("click", (e) => {
+        window.addEventListener("click", () => {
           setLabelBlur(category);
         });
       }
@@ -256,7 +258,7 @@ export default defineComponent({
 
         for (let i = 0; i < joinErrorMsg.length; i++) {
           if (joinErrorMsg[i] !== "") {
-            popupBody.value = joinErrorMsg[i];
+            popupBody.value = joinErrorMsg[i] as string;
             break;
           }
         }

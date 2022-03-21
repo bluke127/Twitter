@@ -8,6 +8,7 @@
       :style="styles"
       v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
+      :class="status === false ? 'error' : status === true ? 'success' : ''"
     />
     <slot name="label"></slot>
   </div>
@@ -25,10 +26,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType } from "vue";
 export default defineComponent({
   inheritAttrs: false,
   props: {
+    status: {
+      type: [null, Boolean] as PropType<null | boolean>,
+      default: null,
+    },
     styles: {
       type: Object as PropType<{ CSSProperties: string | number }>,
       default: () => {
@@ -41,10 +46,10 @@ export default defineComponent({
         return {};
       },
     },
-    type: { type: String, default: 'text', required: false },
-    placeholder: { type: String, required: false, default: '' },
+    type: { type: String, default: "text", required: false },
+    placeholder: { type: String, required: false, default: "" },
     readonly: { type: Boolean },
-    modelValue: { type: String, required: false, default: '' },
+    modelValue: { type: String, required: false, default: "" },
   },
   setup() {},
 });
@@ -66,6 +71,12 @@ export default defineComponent({
     ::placeholder {
       color: #434343;
       font-weight: 900;
+    }
+    &.error {
+      border: 2px solid red !important;
+    }
+    &.success {
+      border: 2px solid blue !important;
     }
   }
 }
