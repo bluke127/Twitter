@@ -1,15 +1,7 @@
 <template>
   <div>
     <div id="wrap">
-      <div id="title">
-        Twitter
-        <!-- <span
-          ><img
-            :src="require('@/assets/images/logo.png')"
-            alt="logo"
-            ref="logo"
-        /></span> -->
-      </div>
+      <div id="title">Twitter</div>
       <ul id="context">
         <li v-for="(userInfo, index) in userInfoStore" :key="index">
           <div class="insert_wrap">
@@ -18,6 +10,13 @@
             }}</span
             ><BaseInput
               :styles="inputStyle"
+              :status="
+                userInfo.errorMsg
+                  ? false
+                  : userInfo.errorMsg === null
+                  ? null
+                  : true
+              "
               v-model="userInfo.value"
               :readonly="category[index] === '생년월일' ? true : false"
               :maxlength="category[index] === '전화번호' ? 13 : ''"
@@ -109,21 +108,21 @@ export default defineComponent({
   components: { defaultPop, BaseInput },
   setup() {
     const inputStyle = {
-      border: '2px solid #eee',
-      height: '40px',
-      lineHeight: '40px',
+      border: "2px solid #eee",
+      height: "40px",
+      lineHeight: "40px",
     };
 
-    const popupTop = ref<string>('');
-    const popupBody = ref<string>('');
-    const confirmMsg = ref<string>('');
-    const cancelMsg = ref<string>('');
+    const popupTop = ref<string>("");
+    const popupBody = ref<string>("");
+    const confirmMsg = ref<string>("");
+    const cancelMsg = ref<string>("");
 
     const popupFlag = computed(() => {
       return store.state.popup.ShowPopup;
     });
     const setupPop = (flag: boolean) => {
-      store.dispatch('popup/SET_POPUP', flag);
+      store.dispatch("popup/SET_POPUP", flag);
     };
     const close = () => {
       setupPop(false);
@@ -144,27 +143,27 @@ export default defineComponent({
     const id = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: '',
+      errorMsg: "",
     });
     const pass = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: '',
+      errorMsg: null,
     });
     const passConfirm = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: '',
+      errorMsg: null,
     });
     const email = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: '',
+      errorMsg: null,
     });
     const phone = ref<userInfo>({
       value: null,
       setValueBtn: false,
-      errorMsg: '',
+      errorMsg: null,
     });
     const birth = ref<birthInfo>({
       value: null,
@@ -204,64 +203,64 @@ export default defineComponent({
     };
     const validateId = (info: string) => {
       if (isId(info) && info) {
-        id.value.errorMsg = '';
+        id.value.errorMsg = "";
         return true;
       } else if (!info) {
-        id.value.errorMsg = '아이디를 입력해주세요';
+        id.value.errorMsg = "아이디를 입력해주세요";
         return false;
       } else {
-        id.value.errorMsg = '아이디의 형식이 맞지 않습니다';
+        id.value.errorMsg = "아이디의 형식이 맞지 않습니다";
         return false;
       }
     };
     const validatePass = (info: string) => {
       if (isPass(info) && info) {
-        pass.value.errorMsg = '';
+        pass.value.errorMsg = "";
         return true;
       } else if (!info) {
-        pass.value.errorMsg = '비밀번호을 입력해주세요';
+        pass.value.errorMsg = "비밀번호을 입력해주세요";
         return false;
       } else {
-        pass.value.errorMsg = '비밀번호의 형식이 맞지 않습니다';
+        pass.value.errorMsg = "비밀번호의 형식이 맞지 않습니다";
         return false;
       }
     };
 
     const validatePassConfirm = (info: string) => {
       if (pass.value.value === info && info) {
-        passConfirm.value.errorMsg = '';
+        passConfirm.value.errorMsg = "";
         return true;
       } else if (!passConfirm.value.value) {
-        passConfirm.value.errorMsg = '비밀번호 확인란을 입력해주세요';
+        passConfirm.value.errorMsg = "비밀번호 확인란을 입력해주세요";
         return false;
       } else {
-        passConfirm.value.errorMsg = '비밀번호와 일치하지 않습니다';
+        passConfirm.value.errorMsg = "비밀번호와 일치하지 않습니다";
         return false;
       }
     };
 
     const validateEmail = (info: string) => {
       if (isEmail(info) && info) {
-        email.value.errorMsg = '';
+        email.value.errorMsg = "";
         return true;
       } else if (!info) {
-        email.value.errorMsg = '이메일을 입력해주세요';
+        email.value.errorMsg = "이메일을 입력해주세요";
         return false;
       } else {
-        email.value.errorMsg = '이메일의 형식이 맞지 않습니다';
+        email.value.errorMsg = "이메일의 형식이 맞지 않습니다";
         return false;
       }
     };
 
     const validatePhone = (info: string) => {
       if (isPhone(info) && info) {
-        phone.value.errorMsg = '';
+        phone.value.errorMsg = "";
         return true;
       } else if (!info) {
-        phone.value.errorMsg = '핸드폰번호을 입력해주세요';
+        phone.value.errorMsg = "핸드폰번호을 입력해주세요";
         return false;
       } else {
-        phone.value.errorMsg = '핸드폰번호의 형식이 맞지 않습니다';
+        phone.value.errorMsg = "핸드폰번호의 형식이 맞지 않습니다";
         return false;
       }
     };
@@ -311,7 +310,7 @@ export default defineComponent({
       console.log(ref(category).value);
       if (!ref(category).value.setValueBtn) {
         ref(category).value.setValueBtn = true;
-        window.addEventListener('click', e => {
+        window.addEventListener("click", () => {
           setLabelBlur(category);
         });
       }
@@ -323,7 +322,7 @@ export default defineComponent({
     };
     const joinInfo = async () => {
       if (!btnActiveFlag.value) {
-        popupTop.value = '경고';
+        popupTop.value = "경고";
         validate();
         const joinErrorMsg = [
           id.value.errorMsg,
@@ -334,8 +333,8 @@ export default defineComponent({
         ];
 
         for (let i = 0; i < joinErrorMsg.length; i++) {
-          if (joinErrorMsg[i] !== '') {
-            popupBody.value = joinErrorMsg[i];
+          if (joinErrorMsg[i] !== "") {
+            popupBody.value = joinErrorMsg[i] as string;
             break;
           }
         }
@@ -348,10 +347,10 @@ export default defineComponent({
       try {
         const response = await joinApi.FETCH_JOIN();
         console.log(response);
-        popupTop.value = '알람';
-        popupBody.value = '회원가입이 되었습니다';
+        popupTop.value = "알람";
+        popupBody.value = "회원가입이 되었습니다";
         localStorage.setItem(
-          'joinInfo',
+          "joinInfo",
           JSON.stringify({
             id: id.value.value,
             pass: pass.value.value,
@@ -359,7 +358,7 @@ export default defineComponent({
             phone: phone.value.value,
           })
         );
-        store.dispatch('popup/SET_POPUP', true);
+        store.dispatch("popup/SET_POPUP", true);
       } catch (e) {
         console.log(e);
       }
@@ -367,7 +366,7 @@ export default defineComponent({
     const confirmFlag = ref<boolean>(false);
     const confirm = () => {
       if (confirmFlag.value) {
-        router.push('/post');
+        router.push("/post");
         return;
       } else {
         close();
@@ -436,7 +435,7 @@ export default defineComponent({
   position: absolute;
   top: 50%;
   left: 50%;
-  font-family: 'AppleSDGothicNeoM00';
+  font-family: "AppleSDGothicNeoM00";
   transform: translate(-50%, -50%);
 }
 #title {
@@ -472,7 +471,7 @@ label {
   margin-right: 5%;
   font-size: 32px;
   vertical-align: middle;
-  font-family: 'Raleway';
+  font-family: "Raleway";
 }
 input {
   display: inline-block;
@@ -507,7 +506,7 @@ input {
   color: honeydew;
   border: none;
   cursor: pointer;
-  font-family: 'AppleSDGothicNeoB00';
+  font-family: "AppleSDGothicNeoB00";
 }
 .join_btn.active {
   background-color: salmon;
@@ -540,7 +539,7 @@ input {
     width: 20px;
     height: 20px;
     display: block;
-    background: url('~@/assets/logo/logo_gather.png');
+    background: url("~@/assets/logo/logo_gather.png");
     background-position: $close;
     cursor: pointer;
   }
