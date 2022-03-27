@@ -20,14 +20,10 @@
               :styles="inputStyle"
               v-model="userInfo.value"
               :readonly="category[index] === '생년월일' ? true : false"
+              :maxlength="category[index] === '전화번호' ? 13 : ''"
               @click="setLabelBtn(userInfo)"
-              @input="
-                [
-                  setLabelBtn(userInfo),
-                  validate(userInfo),
-                  transformPhone($event, index),
-                ]
-              "
+              @keyup="transformPhone($event, index)"
+              @input="[setLabelBtn(userInfo), validate(userInfo)]"
               ><template v-slot:label v-if="userInfo.setValueBtn">
                 <label
                   class="label"
@@ -271,18 +267,21 @@ export default defineComponent({
     };
     const transformPhone = (e: KeyboardEvent, index: number) => {
       if (category[index] === '전화번호') {
-        phone.value.value = phone.value.value?.substring(0, 13) as string;
-        const regNum = /^[0-9]/g;
-        if (phone.value.value) {
-          phone.value.value = phone.value.value.replace(regNum, '');
-        }
-        console.log(phone.value.value);
+        console.log(e.key, e);
         if (e.key === 'Backspace' || e.key === 'Delete') {
           return;
-        } else {
-          if (phone.value.value?.length === 3) phone.value.value += '-';
-
-          if (phone.value.value?.length === 8) phone.value.value += '-';
+        }
+        if (phone.value.value) {
+          phone.value.value = phone.value.value?.substring(0, 13) as string;
+          const regNum = /^[0-9]/g;
+          phone.value.value = phone.value.value.replace(/[^0-9|-]/g, '');
+          if (
+            phone.value.value.length === 3 ||
+            phone.value.value.length === 8
+          ) {
+            phone.value.value += '-';
+          }
+          console.log(regNum.test(phone.value.value), 'bo', phone.value.value);
         }
       }
     };
