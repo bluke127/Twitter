@@ -1,25 +1,25 @@
 <template>
-  <div>
-    <BaseInput :type="'file'" :id="$attrs.id" ref="insertFile"
-      ><template #label
-        ><label
-          :for="$attrs.id"
-          :labelStyle="labelStyle"
-          @click="upload"
-        ></label></template
-    ></BaseInput>
-  </div>
+  <!-- <div> -->
+  <BaseInput :type="'file'" :id="$attrs.id" ref="insertFile" v-bind="$attrs"
+    ><template #label
+      ><label
+        :for="$attrs.id"
+        :labelStyle="labelStyle"
+        @click="upload"
+      ></label></template
+  ></BaseInput>
+  <!-- </div> -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, useAttrs } from "vue";
-import BaseInput from "@/components/BaseInput.vue";
+import { defineComponent, ref, reactive, useAttrs } from 'vue';
+import BaseInput from '@/components/BaseInput.vue';
 
 export default defineComponent({
   inheritAttrs: false,
   components: { BaseInput },
   setup(props, { attrs }) {
-    const src = ref<string>("");
+    const src = ref<string>('');
     const insertFile = ref(null);
     const upload = () => {
       // insertFile.value?.click();
@@ -31,20 +31,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-div {
-  label {
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
-    cursor: pointer;
-    background: red;
-    display: inline-block;
-  }
-  ::v-deep {
-    #profile {
+::v-deep {
+  #profile {
+    input {
       background: blue;
       display: none;
     }
   }
+}
+label {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  cursor: pointer;
+  background: red;
+  display: inline-block;
 }
 </style>

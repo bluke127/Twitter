@@ -13,12 +13,21 @@
       <ul id="context">
         <li v-for="(userInfo, index) in userInfoStore" :key="index">
           <div class="insert_wrap">
-            <span class="category">{{ category[index] }}</span
+            <span class="category" @click.prevent.stop="setCalendar(true)">{{
+              category[index]
+            }}</span
             ><BaseInput
               :styles="inputStyle"
               v-model="userInfo.value"
+              :readonly="category[index] === '생년월일' ? true : false"
               @click="setLabelBtn(userInfo)"
-              @input="[setLabelBtn(userInfo), validate(userInfo)]"
+              @input="
+                [
+                  setLabelBtn(userInfo),
+                  validate(userInfo),
+                  transformPhone($event, index),
+                ]
+              "
               ><template v-slot:label v-if="userInfo.setValueBtn">
                 <label
                   class="label"
@@ -35,6 +44,16 @@
                 </label> </template
             ></BaseInput>
           </div>
+          <div
+            class="calendar"
+            v-if="category[index] === '생년월일' && calendarFlag === true"
+          >
+            <v-date-picker
+              @dayclick="setCalendar(false)"
+              v-model="birth.value"
+              :attributes="attributes"
+            />
+          </div>
           <div class="warnMsg">
             <span v-if="userInfo.errorMsg">{{ userInfo.errorMsg }}</span>
           </div>
@@ -47,7 +66,7 @@
       >
         회원가입
       </button>
-      <router-link to="/auth/join" class="join">로그인</router-link>
+      <router-link to="/auth/login" class="join">로그인</router-link>
     </div>
     <default-pop
       v-if="popupFlag"
@@ -67,16 +86,29 @@
 <script lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
 import router from '@/router';
-import { defineComponent, ref, computed, reactive } from 'vue';
+import {
+  defineComponent,
+  ref,
+  computed,
+  reactive,
+  onUnmounted,
+  onMounted,
+} from 'vue';
 import { useStore } from 'vuex';
 import { isId, isPass, isEmail, isPhone } from '@/api/validate/index';
 import { joinApi } from '@/api/index';
+import { transformDateMethod } from '@/util/user';
+import { Calendar, DatePicker } from 'v-calendar';
+
 import defaultPop from '@/components/Popup/DefaultPopup.vue';
-type userInfo = {
+interface userInfo {
   value: string | null;
   setValueBtn: boolean;
   errorMsg: string;
-};
+}
+interface birthInfo extends Omit<userInfo, 'value'> {
+  value: Date | null;
+}
 export default defineComponent({
   components: { defaultPop, BaseInput },
   setup() {
@@ -100,8 +132,19 @@ export default defineComponent({
     const close = () => {
       setupPop(false);
     };
+    const setCalendar = (flag: boolean) => {
+      calendarFlag.value = flag;
+      console.log(window.event, '이벤트');
+    };
     const store = useStore();
-    const category = ['아이디', '비밀번호', '비밀번호', '이메일', '전화번호'];
+    const category = [
+      '아이디',
+      '비밀번호',
+      '비밀번호',
+      '이메일',
+      '전화번호',
+      '생년월일',
+    ];
     const id = ref<userInfo>({
       value: null,
       setValueBtn: false,
@@ -127,12 +170,29 @@ export default defineComponent({
       setValueBtn: false,
       errorMsg: '',
     });
+    const birth = ref<birthInfo>({
+      value: null,
+      setValueBtn: false,
+      errorMsg: '',
+    });
+    const transformDate = computed(() =>
+      transformDateMethod(birth.value?.value as Date)
+    );
+
+    const attributes = computed(() => {
+      return {
+        highlight: true,
+        dates: birth.value.value,
+      };
+    });
+    const calendarFlag = ref<boolean>(false);
     const userInfoStore = reactive([
       id.value,
       pass.value,
       passConfirm.value,
       email.value,
       phone.value,
+      transformDate,
     ]);
     const validate = () => {
       if (
@@ -209,6 +269,23 @@ export default defineComponent({
         return false;
       }
     };
+    const transformPhone = (e: KeyboardEvent, index: number) => {
+      if (category[index] === '전화번호') {
+        phone.value.value = phone.value.value?.substring(0, 13) as string;
+        const regNum = /^[0-9]/g;
+        if (phone.value.value) {
+          phone.value.value = phone.value.value.replace(regNum, '');
+        }
+        console.log(phone.value.value);
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          return;
+        } else {
+          if (phone.value.value?.length === 3) phone.value.value += '-';
+
+          if (phone.value.value?.length === 8) phone.value.value += '-';
+        }
+      }
+    };
     const checkJoin = computed(() => {
       if (
         !id.value.value ||
@@ -264,6 +341,8 @@ export default defineComponent({
           }
         }
         confirmMsg.value = '확인';
+
+        cancelMsg.value = '';
         store.dispatch('popup/SET_POPUP', true);
         return;
       }
@@ -279,7 +358,7 @@ export default defineComponent({
             pass: pass.value.value,
             email: email.value.value,
             phone: phone.value.value,
-          }),
+          })
         );
         store.dispatch('popup/SET_POPUP', true);
       } catch (e) {
@@ -302,6 +381,10 @@ export default defineComponent({
         return false;
       }
     });
+    onMounted(() => window.addEventListener('click', () => setCalendar(false)));
+    onUnmounted(() => {
+      window.removeEventListener('click', () => setCalendar(false));
+    });
 
     return {
       id,
@@ -309,8 +392,12 @@ export default defineComponent({
       passConfirm,
       email,
       phone,
+      birth,
+      transformDate,
       validateId,
       validatePass,
+      transformPhone,
+      attributes,
       checkJoin,
       setLabelBtn,
       setLabelBlur,
@@ -318,10 +405,12 @@ export default defineComponent({
       btnActiveFlag,
       userInfoStore,
       close,
+      setCalendar,
       store,
       inputStyle,
       category,
       joinInfo,
+      calendarFlag,
       popupTop,
       popupBody,
       confirmMsg,
